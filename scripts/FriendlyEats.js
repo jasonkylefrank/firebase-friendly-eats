@@ -66,9 +66,14 @@ FriendlyEats.prototype.initRouter = function() {
     })
     .resolve();
 
-  firebase
-    .firestore()
-    .collection('restaurants')
+  const db = firebase.firestore();
+
+  // See: https://firebase.google.com/docs/emulator-suite/connect_and_prototype#connect_your_app_to_the_emulators
+  if (location.hostname === "localhost") {
+    db.useEmulator("localhost", 8080);
+  }
+
+  db.collection('restaurants')
     .limit(1)
     .onSnapshot(function(snapshot) {
       if (snapshot.empty) {
